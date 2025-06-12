@@ -874,7 +874,7 @@ body {
 }
 
 #aggiungiCliente-view .form-container {
-    display: block;
+    display: flex;
     opacity: 1;
     visibility: visible;
     max-width: 600px;

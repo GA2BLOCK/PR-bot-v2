@@ -919,3 +919,22 @@ function calcolaIncassoPercentuale() {
         </div>
     `;
 } 
+
+function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            
+            // Update theme switch icon
+            const themeIcon = document.querySelector('.theme-switch i');
+            themeIcon.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+            
+            // Save theme preference
+            localStorage.setItem('theme', newTheme);
+            
+            // Ricarica le statistiche se sono visibili
+            if (document.getElementById('earningsChart')) {
+                mostraStatistiche();
+            }
+        }
