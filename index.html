@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR BOT - Gestione Prevendite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal">
+        <div class="login-content">
+            <h2>Accesso PR BOT</h2>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Accedi</button>
+            </form>
+            <div class="contact-info">
+                <p>Per ricevere le credenziali di accesso, contattare:</p>
+                <p>Email: www.gabrielecascone@gmail.com</p>
+                <p>Telefono: +39 347 007 9555</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainContent" style="display: none;">
+        <div class="navbar">
+            <div class="navbar-header">
+                <h1>🎉 PR BOT</h1>
+            </div>
+            
+            <div class="navbar-section">
+                <h3>📁 Gestione File</h3>
+                <button class="nav-btn" onclick="modificaClienti()">
+                    <i class="fas fa-edit"></i>
+                    Modifica Clienti
+                </button>
+            </div>
+
+            <div class="navbar-section">
+                <h3>👥 Gestione Clienti</h3>
+                <button class="nav-btn" onclick="visualizzaTuttiClienti()">
+                    <i class="fas fa-users"></i>
+                    Visualizza Tutti i Clienti
+                </button>
+                <button class="nav-btn" onclick="visualizzaClientiInsoluti()">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Prevendite Non Saldate
+                </button>
+                <button class="nav-btn" onclick="aggiungiCliente()">
+                    <i class="fas fa-user-plus"></i>
+                    Aggiungi Cliente
+                </button>
+                <button class="nav-btn" onclick="eliminaCliente()">
+                    <i class="fas fa-user-minus"></i>
+                    Elimina Cliente
+                </button>
+            </div>
+
+            <div class="navbar-section">
+                <h3>📊 Statistiche</h3>
+                <button class="nav-btn" onclick="mostraStatistiche()">
+                    <i class="fas fa-chart-bar"></i>
+                    Visualizza Grafici
+                </button>
+                <button class="nav-btn" onclick="totalePrevendite()">
+                    <i class="fas fa-ticket-alt"></i>
+                    Totale Prevendite
+                </button>
+                <button class="nav-btn" onclick="incassoTotale()">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Incasso Totale
+                </button>
+                <button class="nav-btn" onclick="percentualeIncasso()">
+                    <i class="fas fa-percentage"></i>
+                    Percentuale Incasso
+                </button>
+            </div>
+
+            <div class="theme-switch" onclick="toggleTheme()">
+                <i class="fas fa-sun"></i>
+                <span>Cambia Tema</span>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="content" id="content">
+                <!-- Welcome Screen -->
+                <div class="view" id="welcome-view">
+                    <div class="welcome-screen">
+                        <div class="welcome-header">
+                            <h1>PR BOT</h1>
+                            <h2>Sistema di Gestione Prevendite</h2>
+                        </div>
+                        <div class="welcome-content">
+                            <p>Benvenuto nel sistema di gestione prevendite! 🎊</p>
+                            <p>Seleziona un'opzione dal menu per iniziare a gestire le tue prevendite.</p>
+                            <div class="features-list">
+                                <h3>Il sistema ti permette di:</h3>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Gestire i tuoi clienti e le loro prevendite</li>
+                                    <li><i class="fas fa-check"></i> Monitorare gli incassi e i pagamenti</li>
+                                    <li><i class="fas fa-check"></i> Visualizzare statistiche dettagliate</li>
+                                    <li><i class="fas fa-check"></i> Salvare e caricare i dati automaticamente</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Management Views -->
+                <div class="view" id="modificaClienti-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-edit"></i> <span class="modifica-testo">Modifica Clienti</span></h2>
+                    </div>
+                    <div class="view-content">
+                        <div class="clients-grid" id="modificaClientiList">
+                            <!-- Client cards will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Management Views -->
+                <div class="view" id="tuttiClienti-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-users"></i> Tutti i Clienti</h2>
+                    </div>
+                    <div class="view-content">
+                        <div class="search-bar">
+                            <input type="text" placeholder="Cerca cliente..." class="form-control">
+                        </div>
+                        <div class="clients-grid" id="clientsList">
+                            <!-- Client cards will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="clientiInsoluti-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-exclamation-circle"></i> Prevendite Non Saldate</h2>
+                    </div>
+                    <div class="view-content">
+                        <div class="clients-grid" id="insolutiList">
+                            <!-- Insoluti cards will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="aggiungiCliente-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-user-plus"></i> Aggiungi Nuovo Cliente</h2>
+                    </div>
+                    <div class="view-content">
+                        <form id="nuovoClienteForm" class="form-container" onsubmit="return false;" novalidate>
+                            <div class="form-group">
+                                <label for="nuovoNome">Nome</label>
+                                <input type="text" id="nuovoNome" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="nuovoCognome">Cognome</label>
+                                <input type="text" id="nuovoCognome" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="nuovoEvento">Evento</label>
+                                <input type="text" id="nuovoEvento" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="nuovePreveDate">Prevendite fornite</label>
+                                <input type="number" id="nuovePreveDate" class="form-control" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="nuoviSoldiRicevuti">Soldi ricevuti</label>
+                                <input type="number" id="nuoviSoldiRicevuti" class="form-control" min="0">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="salvaCliente()">Aggiungi Cliente</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="view" id="eliminaCliente-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-user-minus"></i> Elimina Cliente</h2>
+                    </div>
+                    <div class="view-content">
+                        <form id="eliminaClienteForm" class="form-container">
+                            <div class="form-group">
+                                <label for="clienteDaEliminare">Seleziona Cliente</label>
+                                <select id="clienteDaEliminare" class="form-control" required>
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-danger">Elimina Cliente</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Statistics Views -->
+                <div class="view" id="statistiche-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-chart-bar"></i> Statistiche</h2>
+                    </div>
+                    <div class="view-content">
+                        <div class="stats-grid">
+                            <div class="chart-card">
+                                <h3>Andamento Prevendite</h3>
+                                <div class="chart-container">
+                                    <canvas id="prevenditeChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Distribuzione Pagamenti</h3>
+                                <div class="chart-container">
+                                    <canvas id="pagamentiChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="totalePrevendite-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-ticket-alt"></i> Totale Prevendite</h2>
+                    </div>
+                    <div class="view-content">
+                        <div class="stats-container">
+                            <!-- Stats will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="incassoTotale-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-money-bill-wave"></i> Incasso Totale</h2>
+                    </div>
+                    <div class="view-content">
+                        <div class="stats-container">
+                            <!-- Stats will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="percentualeIncasso-view" style="display: none;">
+                    <div class="view-header">
+                        <h2><i class="fas fa-percentage"></i> Percentuale Incasso</h2>
+                    </div>
+                    <div class="view-content">
+                        <div style="max-width:400px;margin:0 auto 24px auto;display:flex;gap:10px;align-items:center;">
+                            <input type="number" id="inputPercentuale" class="form-control" min="0" max="100" placeholder="Inserisci percentuale..." style="flex:1;">
+                            <button class="btn btn-primary" id="btnCalcolaPercentuale" onclick="calcolaIncassoPercentuale()">Calcola</button>
+                        </div>
+                        <div id="percentualeIncassoBox"></div>
+                    </div>
+                </div>
+            </div>
+            <footer class="footer">
+                <p class="copyright">© 2025 PR BOT - Tutti i diritti riservati</p>
+                <p class="signature">ga2block</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
