@@ -859,6 +859,22 @@ function initializeCharts() {
     });
 }
 
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'admin') {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('loginStatus').textContent = '✅ Loggato come: ga2block';
+                document.getElementById('loginStatus').style.color = '#28a745';
+            } else {
+                alert('Credenziali non valide!');
+            }
+        });
+
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     // Check login state on page load
@@ -872,7 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showView('welcome');
     
     // Initialize charts when statistics view is shown
-    document.querySelector('[onclick="showView(\'statistiche\')"]').addEventListener('click', initializeCharts);
+    //document.querySelector('[onclick="showView(\'statistiche\')"]').addEventListener('click', initializeCharts);
 });
 
 function calcolaIncassoPercentuale() {
